@@ -1,7 +1,7 @@
 {
   "name": "traveladvisor",
   "version": "0.1.0",
-  "homepage": "https://gitname.github.io/Travel-Companion",
+  "homepage": "https://pranjaldub.github.io/Travel-Companion",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.12.3",
