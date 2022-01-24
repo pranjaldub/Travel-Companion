@@ -2,10 +2,9 @@ import React , {useState , useEffect , createRef} from 'react';
 import {CircularProgress , Grid , Typography , InputLabel , MenuItem , FormControl , Select} from '@material-ui/core';
 import useStyles from './styles';
 import PlaceDetails from '../../PlaceDetails/PlaceDetail';
-function List({places , childClicked , isLoading}) {
+function List({places , childClicked , isLoading , type , setType , rating , setRating}) {
     const classes = useStyles();
-    const [type , setType] = useState('restaurants');
-    const [rating , setRating] = useState('')
+    
     const [elrefs , setElrefs] = useState([])
     useEffect(()=>{
         const refs = Array(places?.length).fill().map((_,index) => elrefs[index] || createRef());

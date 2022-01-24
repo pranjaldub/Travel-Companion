@@ -7,9 +7,12 @@ import PlaceDetail from "./PlaceDetails/PlaceDetail";
 import getPlacesData from "./api";
 function App() {
   const [places, setPLaces] = useState([]);
+  const [filteredPlaces, setFilteredPlaces] = useState([]);
   const [bounds, setBounds] = useState({});
   const [coordinates, setCoordinates] = useState({});
   const [childClicked, setChildClicked] = useState(null);
+  const [type, setType] = useState("restaurants");
+  const [rating, setRating] = useState("");
 
   const [loading, setLoading] = useState(false);
 
@@ -22,25 +25,36 @@ function App() {
   }, []);
 
   useEffect(() => {
-    setLoading(true);
-    getPlacesData(bounds.sw, bounds.ne).then((data) => {
-      console.log(data);
-      console.log(bounds);
-      setPLaces(data);
+    const filteredPlaces = places.filter((place) => place.rating > rating);
+    setFilteredPlaces(filteredPlaces);
+  }, [rating]);
 
-      setLoading(false);
-    });
-  }, [bounds, coordinates]);
+  useEffect(() => {
+    if (bounds.sw && bounds.ne) {
+      setLoading(true);
+      getPlacesData(type, bounds.sw, bounds.ne).then((data) => {
+        console.log(data);
+        console.log(bounds);
+        setPLaces(data?.filter((place) => place.name && place.num_reviews > 0));
+        setFilteredPlaces([]);
+        setLoading(false);
+      });
+    }
+  }, [bounds, type]);
   return (
     <>
       <CssBaseline></CssBaseline>
-      <Header></Header>
+      <Header setCoordinates={setCoordinates}></Header>
       <Grid container spacing={3} style={{ width: "100%" }}>
         <Grid item xs={12} md={4}>
           <List
-            places={places}
+            places={filteredPlaces.length ? filteredPlaces : places}
             childClicked={childClicked}
             isLoading={loading}
+            type={type}
+            setType={setType}
+            rating={rating}
+            setRating={setRating}
           ></List>
         </Grid>
         <Grid item xs={12} md={8}>
@@ -48,7 +62,7 @@ function App() {
             setCoordinates={setCoordinates}
             setBounds={setBounds}
             coordinates={coordinates}
-            places={places}
+            places={filteredPlaces.length ? filteredPlaces : places}
             setChildClicked={setChildClicked}
           ></Map>
         </Grid>
